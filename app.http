@@ -1,0 +1,27 @@
+
+GET http://localhost:3333/todo
+###
+POST http://localhost:3333/todo
+
+{
+"name" : "Name 1",
+"description": "Description 1"
+}
+
+###
+GET http://localhost:3333/todo/1
+
+###
+PUT http://localhost:3333/todo/1
+
+{
+"name" : "Name 1 update",
+"description": "Description 1 update"
+}
+
+###
+DELETE http://localhost:3333/todo/1
+
+
+###
+PUT http://localhost:3333/todo/complete/3

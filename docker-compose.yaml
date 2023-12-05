@@ -1,0 +1,43 @@
+version: '3.0'
+services:
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    restart: on-failure
+    # ports from container exposed to the docker machine and the guest machine
+    ports:
+      # 80 on the host, 8080 on the guest. Websever listens on 8080
+      - "3333:3333" # http
+      - "443:443" # https
+    # file with environment declarations for the container
+    env_file:
+      - web/.env
+    # Link to containers in another service
+    depends_on:
+      - "db"
+    networks:
+      - "mynet"
+    # sync workspace folder with /go
+    volumes:
+      - ../../../../.:/go
+  db:
+    #platform: "linux/x86_64"
+    #platform: ""
+    image: "arm64v8/mysql:latest"
+    container_name: "db-mysql"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: "gotest"
+      MYSQL_DATABASE: "hassandb"
+      MYSQL_ROOT_PASSWORD: "gotest"
+      MYSQL_PASSWORD: "gotest"
+    volumes:
+      #- "./web/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql"
+      - "./web/db/hassandb.sql:/docker-entrypoint-initdb.d/hassandb.sql"
+    networks:
+      - "mynet"
+networks:
+  mynet:
+    driver: "bridge"
